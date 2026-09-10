@@ -2,82 +2,85 @@
 # SIH 2026 Project Repository
 
 ## 1. Project Information
-* **Project Title:** SIA-Kavach – High-Altitude Tactical Counter-UAS Defense Platform
+* **Project Title:** SIA-Kavach – High-Altitude Tactical Counter UAS Defense Platform
 * **PS ID:** SIH26050
 * **PS Title:** High Altitude Performance Optimization and Robust Design of Anti-Drone System
 * **Category:** Hardware
 * **Theme:** Smart Automation
 * **Ministry/Organization:** DRDO
-* **Team Members:** Shashank Shekhar Mishra (2025UBT1072), Reyansh Adlakha, Dhruv Bharti
 
 ## 2. Problem Statement
-Anti-drone systems are deployed for the detection, tracking, identification, and neutralization of unauthorized drones. However, operational performance significantly degrades in high-altitude environments characterized by extreme cold, low atmospheric pressure, reduced air density, and high winds. Components such as cables, motors, and batteries experience altered material properties and thermal stresses, while structural dynamics and component responses suffer, leading to severe degradation in precision tracking and stabilization. There is a critical requirement to develop robust design methodologies and compensation mechanisms to ensure reliable performance in these harsh operational conditions.
+Anti-drone systems are deployed for the detection, tracking, identification, and neutralization of unauthorized drones. However, operational performance significantly degrades in high-altitude environments characterized by extreme sub-zero cold (-40°C), thin atmospheric air pressure, low air density, and heavy wind buffeting. Components such as cables, motors, and batteries experience altered material properties, cold-induced voltage collapse, and thermal stresses. Concurrently, optical lenses fog, sensors de-sync, and structural vibration impairs target lock. There is a critical requirement to engineer robust hardware compensation mechanisms alongside environmental health telemetry to guarantee operational reliability in these harsh border conditions.
 
 ## 3. Proposed Solution
-SIA-Kavach is an indigenously architected, extreme-altitude counter-UAS platform engineered to guarantee 24/7 airspace defense between 3,500m and 5,500m MSL. The hardware is secured within a Bud Industries IP65 NEMA enclosure featuring M12 waterproof venting for pressure equalization. To combat cold-induced voltage collapse, it utilizes a Daly Smart BMS managing LiFePO4 cells and active Stego PTC core heating. On the software side, an NVIDIA Jetson Orin NX runs an Extended Kalman Filter for Bayesian sensor fusion (FMCW Radar + LWIR Thermal + Optical) alongside Adaptive PID gain-scheduling to maintain sub-degree pointing accuracy during high-wind buffeting, culminating in automated RF soft-kill mitigation.
+SIA-Kavach is an indigenously architected, extreme-altitude counter-UAS platform engineered to guarantee 24/7 airspace defense between 3,500m and 5,500m MSL. The hardware is enclosed in a modified Bud Industries IP65 NEMA enclosure featuring M12 waterproof venting for ambient pressure equalization. 
+
+To eliminate cold soak failure, the system integrates a dual-zone thermal control loop featuring Stego PTC heating elements, segmented silicone thermal barriers, and active thermal probe telemetry tracking compute cluster and battery core temps. System health is continuously evaluated using barometric, ambient temperature, wind velocity, and tri-axial vibration sensors. 
+
+Target tracking is executed on an NVIDIA Jetson Orin NX running an Extended Kalman Filter (EKF) that fuses 77 GHz FMCW Radar, LWIR Thermal, EO Visual, and Passive RF signals. Mechanical pointing accuracy is stabilized via Adaptive PID gain-scheduling on SimpleFOC drivers, culminating in an automated multi-band RF soft-kill neutralization countermeasure.
 
 ## 4. Key Features
-* **Ruggedized Environmental Housing:** IP65 sealed with bidirectional pressure equalization.
-* **Active Thermal Management:** PTC heating and custom silicone thermal barriers to prevent localized hotspots and sensor noise.
-* **Dynamic Sensor Fusion:** Bayesian confidence weighting dynamically shifts reliance to 77 GHz FMCW radar during optical whiteouts.
-* **Mechanical Stabilization:** Adaptive PID gain-scheduling counters wind jitter, maintaining a torque residual of <0.05°.
-* **Tactical C2 Dashboard:** Real-time telemetry, AES-256 secure authentication, and active OSINT threat tracking.
-* **Soft-Kill Mitigation:** Targeted RF directed jammer (2.4/5.8 GHz & GNSS L1/L2) to trigger drone fail-safes.
+* **Environmental & Atmospheric Diagnostics:** Real-time tracking of station altitude (MSL), ambient air temperature, barometric pressure (hPa), and crosswind velocity.
+* **Structural Health Telemetry:** Tri-axial IMU monitoring to detect and compensate for RMS mechanical vibration caused by high-altitude gales.
+* **Active Closed-Loop Thermal Management:** Internal temperature telemetry actively monitors Jetson CPU, GPU Tensor Cores, and power rails, cycling Stego PTC heaters to prevent thermal clock-gating and cold collapse.
+* **Ruggedized Pressure Equalization:** IP65 sealed housing fitted with bidirectional M12 breathable vents to prevent seal blowouts under low ambient atmospheric pressure.
+* **Multi-Modal Bayesian Sensor Fusion:** Dynamic covariance inflation shifts tracking reliance off degraded optical sensors onto 77 GHz FMCW Radar during blizzards and mountain whiteouts.
+* **Sub-Zero Power Architecture:** Daly Smart BMS paired with cold-tolerant Aatral Sodium-Ion / LiFePO4 cells rated for operation down to -40°C.
+* **Targeted Soft-Kill Mitigation:** Directed RF suppression covering 2.4 GHz ISM, 5.8 GHz FPV, and GNSS L1/L2 bands to force hostile drones into blind fail-safe landing.
 
 ## 5. Technology Stack
-* **Hardware Compute:** NVIDIA Jetson Orin NX
-* **Sensors:** Texas Instruments IWR6843 (mmWave Radar), FLIR Lepton 3.5 (LWIR Thermal)
-* **Actuation & Power:** SimpleFOC Mini Brushless Drivers, Daly Smart BMS (4S 100A), Aatral Sodium-Ion/LiFePO4 Packs
-* **Communications:** Microchip RN2903 LoRa Mesh (Encrypted Telemetry)
-* **Software Backend:** Python, FastAPI, C++ (Sensor Drivers)
-* **Frontend UI:** React / Vue.js (Web-based Tactical Dashboard)
+
+### A. Sensor Suite (Target Acquisition & Tracking)
+* **Radar:** 77 GHz / TI IWR6843 FMCW mmWave Radar
+* **Thermal Vision:** FLIR Lepton 3.5 Long-Wave Infrared (LWIR) Camera
+* **Optical Tracking:** High-Definition Electro-Optical (EO) Telephoto Camera
+* **Passive RF Detection:** Software-Defined Radio (SDR) / Broadband Spectrum Receiver
+* **Acoustic Array:** Beamforming microphone array for acoustic signature profiling
+
+### B. Environmental & Diagnostic Sensors (System Health)
+* **Ambient Temperature & Humidity:** High-precision digital temperature sensor
+* **Barometric Pressure & Altitude:** Digital Barometer / Altimeter sensor
+* **Wind / Anemometry:** Solid-state ultrasonic wind velocity sensor
+* **Vibration & Dynamics:** 6-DoF IMU (Tri-Axial Accelerometer & Gyroscope) for RMS vibration logging
+* **Board & Core Thermistors:** Multi-point internal temperature probes (Jetson CPU/GPU, PDB, and Enclosure cavity)
+
+### C. Compute, Actuation & Mitigation
+* **Edge Processing:** NVIDIA Jetson Orin NX (AI Vision, Bayesian EKF Fusion, Gain Scheduling)
+* **Gimbal Actuation:** High-torque brushless motors driven by SimpleFOC Mini drivers via SPI/PWM
+* **Power & Battery:** Daly Smart BMS (4S 100A), Aatral Sodium-Ion / LiFePO4 cold-resilient cells, regulated PDB
+* **Thermal Hardware:** Stego PTC Heater 028, custom 150x150mm silicone thermal isolation barrier
+* **Telemetry & Communications:** Microchip RN2903 LoRa Mesh (AES-256 encrypted telemetry)
+* **Countermeasure:** Multi-band directional RF jammer (2.4 GHz, 5.8 GHz, GNSS L1/L2)
+
+### D. Software & C2 Stack
+* **Backend:** Python 3.10+, FastAPI, C++ (Low-level sensor drivers & SimpleFOC interface)
+* **Algorithms:** Extended Kalman Filter (EKF), Adaptive PID Gain-Scheduling, YOLOv8 TensorRT
+* **Frontend:** Tactical C2 Web Dashboard (React, TailwindCSS, WebSocket real-time telemetry)
 
 ## 6. Architecture
-See `docs/architecture.md` for full schematic breakdowns.
+                              +-----------------+------------------+
+                              |    ENVIRONMENTAL SENSOR SUITE      |
+                              | (Barometer, Ambient Temp, IMU,     |
+                              |  Wind Anemometer, Thermistors)     |
+                              +-----------------+------------------+
+                                                |
+                                                v
++-----------------------------+       +-------------+--------------+       +-----------------------------+
+|    TARGETING SENSORS        |       |    NVIDIA JETSON ORIN NX   |       |   POWER & THERMAL CONTROL   |
+| - 77GHz FMCW Radar          | ----> | - Bayesian EKF Fusion      | <---> | - Daly Smart BMS            |
+| - FLIR Lepton 3.5 LWIR      |       | - Target Classification    |       | - Stego PTC Heaters         |
+| - Optical EO Camera         |       | - Adaptive PID Scheduling  |       | - Aatral Sodium-Ion Battery |
+| - Passive RF SDR Receiver   |       | - Environmental Diagnostics|       | - PDB 12V Regulated Rails   |
++-----------------------------+       +-------------+--------------+       +-----------------------------+
+|
++--------------------------+--------------------------+
+|                                                     |
+v                                                     v
++---------------+----------------+                   +----------------+---------------+
+|    ACTUATION & GIMBAL SYSTEM   |                   |    TACTICAL C2 DASHBOARD       |
+| - SimpleFOC Mini Drivers, Servo|                   | - Real-Time Telemetry & Health |
+| - Brushless Precision Motors   |                   | - 2D Radar Polar Plot          |
+| - Dynamic Wind Stabilization   |                   | - RF Directed Jammer Trigger   |
++--------------------------------+                   +--------------------------------+
 
-[Sensors: Radar/Thermal/EO] ---> [NVIDIA Jetson Orin NX (Sensor Fusion & Vision)]
-                                      |
-                                      +---> [SimpleFOC Gimbal Controllers] ---> [Target Tracking]
-                                      |
-[Power: Daly BMS + LiFePO4] --------> +---> [Stego PTC Heating & Thermal Mgmt]
-                                      |
-[Encrypted LoRa Mesh] <---------------+---> [Tactical C2 Dashboard] ---> [RF Jammer Deployment]
 
-## 7. Repository Structure
-
-YOUR-SIH-PROJECT/
-├── README.md
-├── SUBMISSION_GUIDE.md
-├── submission/
-│   ├── PRESENTATION.md
-│   └── DEMO.md
-├── src/
-│   ├── main.py
-│   ├── fusion_engine/
-│   └── dashboard_ui/
-├── docs/
-│   ├── architecture.md
-│   └── challenge_accommodation_matrix.md
-├── assets/
-│   └── screenshots/
-│       ├── hardware_build/
-│       ├── software_dashboard/
-│       └── README.md
-├── requirements.txt
-├── .gitignore
-└── LICENSE
-
-## 8. Final Presentation
-Our complete challenge accommodation matrix, hardware specifications, and system architecture presentation can be found in `submission/PRESENTATION.md`.
-
-## 9. Demo Video
-A full simulation of the detection-to-neutralization pipeline and hardware integration is available in `submission/DEMO.md`.
-
-## 10. Screenshots / Prototype Photos
-Detailed images of the 3D-printed PETG mounts, wiring harnesses, PDB integration, and the tactical UI are located in `assets/screenshots/`.
-
-## 11. Installation
-```bash
-git clone <YOUR_REPOSITORY_URL>
-cd <YOUR_PROJECT_FOLDER>
-pip install -r requirements.txt
