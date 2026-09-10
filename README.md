@@ -58,20 +58,19 @@ Target tracking is executed on an NVIDIA Jetson Orin NX running an Extended Kalm
 * **Frontend:** Tactical C2 Web Dashboard (React, TailwindCSS, WebSocket real-time telemetry)
 
 ## 6. Architecture
-
-=======================================================================
+    =======================================================================
           PHASE 1: DATA ACQUISITION & SENSING (INPUT LAYER)
-=======================================================================
+    =======================================================================
  
- [ Environmental & Health Telemetry ]        [ Target Detection Suite ]
-  │                                           │
-  ├─ Atmospheric (BME280/Anemometer)          ├─ Primary: 77GHz FMCW Radar
-  │   └─ Temp, Pressure, Wind Speed           │   └─ Range, Velocity, Bearing
-  │                                           │
-  ├─ Structural (BMI088 IMU)                  ├─ Secondary: FLIR LWIR Thermal
-  │   └─ Tri-axial RMS Vibration              │   └─ Heat Signature & Plume
-  │                                           │
-  └─ Internal Health (INA219/Thermistors)     ├─ Tertiary: EO Optical Camera
+    [ Environmental & Health Telemetry ]        [ Target Detection Suite ]
+    │                                           │
+    ├─ Atmospheric (BME280/Anemometer)          ├─ Primary: 77GHz FMCW Radar
+    │   └─ Temp, Pressure, Wind Speed           │   └─ Range, Velocity, Bearing
+    │                                           │
+    ├─ Structural (BMI088 IMU)                  ├─ Secondary: FLIR LWIR Thermal
+    │   └─ Tri-axial RMS Vibration              │   └─ Heat Signature & Plume
+    │                                           │
+    └─ Internal Health (INA219/Thermistors)     ├─ Tertiary: EO Optical Camera
       └─ Bus Voltage, Core Temperatures       │   └─ Visual ID & Classification
                                               │
                                               └─ Passive: SDR / Acoustic
@@ -82,20 +81,20 @@ Target tracking is executed on an NVIDIA Jetson Orin NX running an Extended Kalm
                                   │ (Raw Data via SPI / I2C / UART)
                                   ↓
 
-=======================================================================
+    =======================================================================
       PHASE 2: EDGE COMPUTE & FUSION (NVIDIA JETSON ORIN NX)
-=======================================================================
+    =======================================================================
 
-                          [ ORIN NX CORE ]
-                                  │
-  ┌───────────────────────────────┼───────────────────────────────┐
-  │                               │                               │
-  ↓                               ↓                               ↓
-[ Thermal Manager ]       [ Fusion Engine ]             [ Flight Controller ]
-  │                               │                               │
-  ├─ Monitors CPU/GPU temp        ├─ Extended Kalman Filter       ├─ Analyzes IMU vibration
-  │                               │                               │
-  └─ Triggers Stego PTC Heater    ├─ Bayesian Covariance Check    └─ Adaptive PID Scheduler
+                            [ ORIN NX CORE ]
+                                    │
+    ┌───────────────────────────────┼───────────────────────────────┐
+    │                               │                               │
+    ↓                               ↓                               ↓
+    [ Thermal Manager ]       [ Fusion Engine ]             [ Flight Controller ]
+    │                               │                               │
+    ├─ Monitors CPU/GPU temp        ├─ Extended Kalman Filter       ├─ Analyzes IMU vibration
+    │                               │                               │
+    └─ Triggers Stego PTC Heater    ├─ Bayesian Covariance Check    └─ Adaptive PID Scheduler
      if temp drops < thresholds   │  (Deprioritizes camera if     │  (Calculates new Kp, Ki, 
                                   │   whiteout/fog detected)      │   Kd gains for wind load)
                                   │                               │
@@ -107,20 +106,20 @@ Target tracking is executed on an NVIDIA Jetson Orin NX running an Extended Kalm
                                   │ (Processed Commands & Telemetry)
                                   ↓
 
-=======================================================================
+    =======================================================================
         PHASE 3: ACTUATION, C2, & MITIGATION (OUTPUT LAYER)
-=======================================================================
+    =======================================================================
 
-  ┌───────────────────────────────┼───────────────────────────────┐
-  │                               │                               │
-  ↓                               ↓                               ↓
-[ Physical Tracking ]       [ C2 Dashboard ]              [ Neutralization ]
-  │                               │                               │
-  ├─ SPI to SimpleFOC Drivers     ├─ Encrypted via LoRa Mesh      ├─ Target locked in UI
-  │                               │                               │
-  └─ Brushless Motors engage      ├─ Renders 2D Polar Plot        ├─ Operator Authorization
-  │                               │                               │
-  └─ Gimbal slews to target       └─ Displays System Health       └─ RF Jammer Deployed
+    ┌───────────────────────────────┼───────────────────────────────┐
+    │                               │                               │
+    ↓                               ↓                               ↓
+    [ Physical Tracking ]       [ C2 Dashboard ]              [ Neutralization ]
+    │                               │                               │
+    ├─ SPI to SimpleFOC Drivers     ├─ Encrypted via LoRa Mesh      ├─ Target locked in UI
+    │                               │                               │
+    └─ Brushless Motors engage      ├─ Renders 2D Polar Plot        ├─ Operator Authorization
+    │                               │                               │
+    └─ Gimbal slews to target       └─ Displays System Health       └─ RF Jammer Deployed
      (Maintains <0.5° error)                                         (2.4/5.8GHz & GNSS)
                                                                   │
                                                                   └─ Threat reaches Fail-Safe
