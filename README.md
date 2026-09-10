@@ -6,7 +6,7 @@
 * **PS ID:** SIH26050
 * **PS Title:** High Altitude Performance Optimization and Robust Design of Anti-Drone System
 * **Category:** Hardware
-* **Theme:** Smart Automation
+* **Theme:** Robotics and Drone
 * **Ministry/Organization:** DRDO
 
 ## 2. Problem Statement
