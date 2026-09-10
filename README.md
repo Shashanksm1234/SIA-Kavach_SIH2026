@@ -127,3 +127,7 @@ Target tracking is executed on an NVIDIA Jetson Orin NX running an Extended Kalm
      (Maintains <0.5° error)                                         (2.4/5.8GHz & GNSS)
                                                                   │
                                                                   └─ Threat reaches Fail-Safe
+## 7. Youtube Video Link 
+https://youtu.be/b6JOycQUBH8?si=EvOCV6wmlhk4iRvX
+## 8. PPT Drive Link
+https://drive.google.com/file/d/1l5IjpKKgdHX2Ls4RDt3SS1CB12fKvXPa/view?usp=drivesdk
