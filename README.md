@@ -1,4 +1,4 @@
-# NAAN-Sense_SIA-Kavach_SIH2026
+# SIA_KAVACH_AntiDroneSystem_OptimizedForHigherAltitudes
 # SIH 2026 Project Repository
 
 
